@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>Slayer Accounts</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;padding:20px;
+  display:grid;place-items:center;
+  background:#090909;color:white;
+  font-family:Arial,sans-serif
+}
+.panel{
+  width:100%;max-width:430px;padding:30px;
+  background:#171717;border:1px solid #333;
+  border-radius:18px
+}
+h1{text-align:center}
+.subtitle{text-align:center;color:#999}
+input,button{
+  width:100%;padding:14px;margin:7px 0;
+  border-radius:9px;font-size:15px
+}
+input{
+  background:#090909;color:white;
+  border:1px solid #444
+}
+button{border:0;cursor:pointer;font-weight:bold}
+button:disabled{opacity:.5;cursor:wait}
+.primary{background:#a52b35;color:white}
+.social{background:#292929;color:white;border:1px solid #444}
+.links{text-align:center;margin:16px 0;color:#aaa;font-size:14px}
+a{color:#e87580;cursor:pointer;text-decoration:none}
+#message{
+  display:none;padding:12px;margin:12px 0;
+  background:#292929;border-radius:8px;
+  overflow-wrap:anywhere;font-size:13px
+}
+#account{display:none;text-align:center}
+#userEmail{color:#aaa;overflow-wrap:anywhere}
+.divider{
+  display:flex;align-items:center;gap:12px;
+  color:#777;margin:20px 0;font-size:12px
+}
+.divider:before,.divider:after{
+  content:"";height:1px;background:#444;flex:1
+}
+</style>
+</head>
+
+<body>
+<main class="panel">
+
+<section id="login">
+<h1>⚔️ Slayer Accounts</h1>
+<p class="subtitle">Your fanbase account starts here.</p>
+
+<div id="message" role="status" aria-live="polite"></div>
+
+<form id="authForm">
+<input id="email" type="email" placeholder="Email address"
+autocomplete="email" required>
+
+<input id="password" type="password" placeholder="Password"
+minlength="6" autocomplete="current-password" required>
+
+<button class="primary" id="submitBtn" type="submit">Sign In</button>
+</form>
+
+<div class="links"><a id="forgot">Forgot password?</a></div>
+
+<div class="links">
+<span id="switchLabel">New here?</span>
+<a id="switchMode">Create an account</a>
+</div>
+
+<div class="divider">OR SIGN IN WITH</div>
+
+<button class="social" id="google">Google</button>
+<button class="social" id="twitter">X (Twitter)</button>
+<button class="social" id="github">GitHub</button>
+<button class="social" id="yahoo">Yahoo</button>
+
+<p class="subtitle" style="font-size:12px;margin-top:22px">
+Powered by Firebase Authentication
+</p>
+</section>
+
+<section id="account">
+<h1>Welcome, Slayer! ⚔️</h1>
+<p>You are signed in.</p>
+<p id="userEmail"></p>
+<button class="primary" id="logout">Sign Out</button>
+</section>
+
+</main>
+
+<script type="module">
+import {initializeApp}
+from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+sendPasswordResetEmail,
+signInWithRedirect,
+getRedirectResult,
+onAuthStateChanged,
+signOut,
+GoogleAuthProvider,
+TwitterAuthProvider,
+GithubAuthProvider,
+OAuthProvider
+} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+// FIREBASE CONFIGURATION
+// Replace with your actual Firebase Web App config.
+
+const firebaseConfig = {
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+projectId: "YOUR_PROJECT_ID",
+storageBucket: "YOUR_STORAGE_BUCKET",
+messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+auth.languageCode = "en";
+
+const $ = id => document.getElementById(id);
+
+let registering = false;
+
+function showMessage(text){
+$("message").textContent = text;
+$("message").style.display = "block";
+}
+
+function hideMessage(){
+$("message").style.display = "none";
+}
+
+function friendlyError(error){
+const errors = {
+"auth/email-already-in-use":"Email already registered.",
+"auth/invalid-email":"Invalid email address.",
+"auth/weak-password":"Password must be at least 6 characters.",
+"auth/invalid-credential":"Incorrect email or password.",
+"auth/operation-not-allowed":"This provider is not enabled.",
+"auth/unauthorized-domain":"This domain is not authorized in Firebase.",
+"auth/too-many-requests":"Too many attempts. Try again later.",
+"auth/account-exists-with-different-credential":
+"An account already exists with another sign-in method."
+};
+return errors[error.code] || error.message || "Something went wrong.";
+}
+
+// LOGIN / REGISTER
+$("switchMode").onclick = () => {
+registering = !registering;
+hideMessage();
+
+$("submitBtn").textContent =
+registering ? "Create Account" : "Sign In";
+
+$("switchLabel").textContent =
+registering ? "Already registered?" : "New here?";
+
+$("switchMode").textContent =
+registering ? "Sign in" : "Create an account";
+
+$("password").autocomplete =
+registering ? "new-password" : "current-password";
+};
+
+// EMAIL AUTH
+$("authForm").onsubmit = async event => {
+event.preventDefault();
+hideMessage();
+$("submitBtn").disabled = true;
+
+try {
+const address = $("email").value.trim();
+const pass = $("password").value;
+
+if(registering){
+await createUserWithEmailAndPassword(auth,address,pass);
+}else{
+await signInWithEmailAndPassword(auth,address,pass);
+}
+} catch(error){
+showMessage(friendlyError(error));
+} finally{
+$("submitBtn").disabled = false;
+}
+};
+
+// PASSWORD RESET
+$("forgot").onclick = async () => {
+const address = $("email").value.trim();
+
+if(!address){
+showMessage("Enter your email address first.");
+return;
+}
+
+try{
+await sendPasswordResetEmail(auth,address);
+showMessage("Password reset email sent!");
+}catch(error){
+showMessage(friendlyError(error));
+}
+};
+
+// PROVIDERS
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({prompt:"select_account"});
+
+const twitterProvider = new TwitterAuthProvider();
+const githubProvider = new GithubAuthProvider();
+const yahooProvider = new OAuthProvider("yahoo.com");
+
+// REDIRECT LOGIN
+async function socialSignIn(provider){
+hideMessage();
+try{
+await signInWithRedirect(auth,provider);
+}catch(error){
+showMessage(friendlyError(error));
+}
+}
+
+$("google").onclick = () => socialSignIn(googleProvider);
+$("twitter").onclick = () => socialSignIn(twitterProvider);
+$("github").onclick = () => socialSignIn(githubProvider);
+$("yahoo").onclick = () => socialSignIn(yahooProvider);
+
+// REDIRECT RESULT
+try{
+await getRedirectResult(auth);
+}catch(error){
+showMessage(friendlyError(error));
+}
+
+// AUTH STATE
+onAuthStateChanged(auth,user => {
+if(user){
+$("login").style.display = "none";
+$("account").style.display = "block";
+$("userEmail").textContent =
+user.email || "Signed-in account";
+}else{
+$("login").style.display = "block";
+$("account").style.display = "none";
+}
+});
+
+// SIGN OUT
+$("logout").onclick = async () => {
+try{
+await signOut(auth);
+}catch(error){
+showMessage(friendlyError(error));
+}
+};
+
+</script>
+</body>
+</html>
