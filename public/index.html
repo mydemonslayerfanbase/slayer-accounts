@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090909">
+<meta name="theme-color" content="#101018">
 <title>Slayer Accounts</title>
 
 <style>
@@ -12,266 +12,442 @@
 body{
   margin:0;min-height:100vh;padding:20px;
   display:grid;place-items:center;
-  background:#090909;color:white;
+  background:#101018;color:white;
   font-family:Arial,sans-serif
 }
-.panel{
-  width:100%;max-width:430px;padding:30px;
-  background:#171717;border:1px solid #333;
-  border-radius:18px
+.container{
+  width:100%;max-width:460px;
+  padding:25px;background:#1b1b28;
+  border:1px solid #39394c;border-radius:18px
 }
-h1{text-align:center}
-.subtitle{text-align:center;color:#999}
-input,button{
-  width:100%;padding:14px;margin:7px 0;
-  border-radius:9px;font-size:15px
-}
+h1,h2{text-align:center;color:#b49aff}
+.subtitle{text-align:center;color:#aaa}
 input{
-  background:#090909;color:white;
-  border:1px solid #444
+  width:100%;padding:13px;margin:8px 0;
+  border:1px solid #44445a;border-radius:8px;
+  background:#11111b;color:white
 }
-button{border:0;cursor:pointer;font-weight:bold}
-button:disabled{opacity:.5;cursor:wait}
-.primary{background:#a52b35;color:white}
-.social{background:#292929;color:white;border:1px solid #444}
-.links{text-align:center;margin:16px 0;color:#aaa;font-size:14px}
-a{color:#e87580;cursor:pointer;text-decoration:none}
-#message{
-  display:none;padding:12px;margin:12px 0;
-  background:#292929;border-radius:8px;
-  overflow-wrap:anywhere;font-size:13px
+button{
+  width:100%;padding:13px;margin:7px 0;
+  border:0;border-radius:8px;cursor:pointer;
+  background:#7955d9;color:white;font-weight:bold
 }
-#account{display:none;text-align:center}
-#userEmail{color:#aaa;overflow-wrap:anywhere}
-.divider{
-  display:flex;align-items:center;gap:12px;
-  color:#777;margin:20px 0;font-size:12px
+button.secondary{background:#303044}
+button.danger{background:#b83d55}
+.tabs{display:flex;gap:10px}
+.tabs button{background:#303044}
+.tabs button.active{background:#7955d9}
+.divider{text-align:center;color:#888;margin:20px}
+.message{
+  display:none;background:#29293b;padding:12px;
+  border-radius:8px;margin-top:12px;overflow-wrap:anywhere
 }
-.divider:before,.divider:after{
-  content:"";height:1px;background:#444;flex:1
+.hidden{display:none!important}
+.avatar{
+  width:115px;height:115px;border-radius:50%;
+  object-fit:cover;background:#303044;
+  display:block;margin:15px auto;
+  border:3px solid #7955d9
 }
+label{display:block;color:#bbb;margin-top:12px}
+.small{text-align:center;color:#888;font-size:12px}
+a{color:#b49aff}
 </style>
 </head>
 
 <body>
-<main class="panel">
+<main class="container">
 
-<section id="login">
-<h1>⚔️ Slayer Accounts</h1>
-<p class="subtitle">Your fanbase account starts here.</p>
+<section id="authSection">
+<h1>⚔ Slayer Accounts</h1>
+<p class="subtitle">Your account. Your community.</p>
 
-<div id="message" role="status" aria-live="polite"></div>
-
-<form id="authForm">
-<input id="email" type="email" placeholder="Email address"
-autocomplete="email" required>
-
-<input id="password" type="password" placeholder="Password"
-minlength="6" autocomplete="current-password" required>
-
-<button class="primary" id="submitBtn" type="submit">Sign In</button>
-</form>
-
-<div class="links"><a id="forgot">Forgot password?</a></div>
-
-<div class="links">
-<span id="switchLabel">New here?</span>
-<a id="switchMode">Create an account</a>
+<div class="tabs">
+<button id="loginTab" class="active" type="button">Login</button>
+<button id="registerTab" type="button">Register</button>
 </div>
 
-<div class="divider">OR SIGN IN WITH</div>
+<form id="authForm">
+<input id="email" type="email" placeholder="Email address" autocomplete="email" required>
+<input id="password" type="password" placeholder="Password" minlength="6" autocomplete="current-password" required>
+<button id="submitButton" type="submit">Login</button>
+</form>
 
-<button class="social" id="google">Google</button>
-<button class="social" id="twitter">X (Twitter)</button>
-<button class="social" id="github">GitHub</button>
-<button class="social" id="yahoo">Yahoo</button>
+<button class="secondary" id="resetButton" type="button">Forgot password?</button>
 
-<p class="subtitle" style="font-size:12px;margin-top:22px">
-Powered by Firebase Authentication
+<div class="divider">OR CONTINUE WITH</div>
+
+<button class="secondary" id="googleButton" type="button">Continue with Google</button>
+<button class="secondary" id="xButton" type="button">Continue with X</button>
+<button class="secondary" id="githubButton" type="button">Continue with GitHub</button>
+<button class="secondary" id="yahooButton" type="button">Continue with Yahoo</button>
+</section>
+
+<section id="accountSection" class="hidden">
+<h1>Your Account</h1>
+
+<img id="avatar" class="avatar" alt="Profile picture">
+
+<p id="welcome" class="subtitle"></p>
+<p id="accountEmail" class="small"></p>
+<p id="verificationStatus" class="small"></p>
+
+<button id="settingsButton" type="button">Account Settings</button>
+
+<div id="settings" class="hidden">
+<h2>Account Settings</h2>
+
+<label for="displayName">Display name</label>
+<input id="displayName" type="text" maxlength="40" placeholder="Your display name">
+<button id="saveNameButton" type="button">Save Display Name</button>
+
+<label for="photoURL">Profile Picture URL</label>
+<input id="photoURL" type="url" placeholder="https://example.com/photo.png">
+
+<img id="avatarPreview" class="avatar" alt="Profile preview">
+
+<button id="savePhotoButton" type="button">Save Profile Picture</button>
+<button id="removePhotoButton" class="secondary" type="button">Remove Profile Picture</button>
+
+<label for="newPassword">New password</label>
+<input id="newPassword" type="password" minlength="6" placeholder="New password">
+<button id="passwordButton" type="button">Change Password</button>
+
+<button id="verifyButton" class="secondary" type="button">Send Verification Email</button>
+<button id="deleteButton" class="danger" type="button">Delete Account</button>
+</div>
+
+<button id="logoutButton" class="danger" type="button">Log Out</button>
+
+<p class="small">
+Main fanbase:
+<a href="https://mydemonslayerfanbase.github.io/-My-Demon-Slayer-Fanbase/" target="_blank" rel="noopener">Visit website</a>
 </p>
 </section>
 
-<section id="account">
-<h1>Welcome, Slayer! ⚔️</h1>
-<p>You are signed in.</p>
-<p id="userEmail"></p>
-<button class="primary" id="logout">Sign Out</button>
-</section>
+<div id="message" class="message" role="status" aria-live="polite"></div>
+<p class="small">Slayer Accounts · Powered by Firebase</p>
 
 </main>
 
 <script type="module">
-import {initializeApp}
-from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
 
 import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-sendPasswordResetEmail,
-signInWithRedirect,
-getRedirectResult,
-onAuthStateChanged,
-signOut,
-GoogleAuthProvider,
-TwitterAuthProvider,
-GithubAuthProvider,
-OAuthProvider
-} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
-
-// FIREBASE CONFIGURATION
-// Replace with your actual Firebase Web App config.
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  TwitterAuthProvider,
+  GithubAuthProvider,
+  OAuthProvider,
+  signInWithPopup,
+  sendPasswordResetEmail,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+  updatePassword,
+  sendEmailVerification,
+  deleteUser
+} from
+"https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
 
 const firebaseConfig = {
-apiKey: "YOUR_API_KEY",
-authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-projectId: "YOUR_PROJECT_ID",
-storageBucket: "YOUR_STORAGE_BUCKET",
-messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyARhibIwIKQ_r5tDahXUOYStmCx2OrFwfU",
+  authDomain: "mdsf-1bdf3.firebaseapp.com",
+  projectId: "mdsf-1bdf3",
+  storageBucket: "mdsf-1bdf3.firebasestorage.app",
+  messagingSenderId: "289401878918",
+  appId: "1:289401878918:web:221fbe017998adeb9dd407",
+  measurementId: "G-1XDQTDWHZ6"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-auth.languageCode = "en";
 
 const $ = id => document.getElementById(id);
-
 let registering = false;
 
-function showMessage(text){
-$("message").textContent = text;
-$("message").style.display = "block";
+function message(text){
+  $("message").textContent = text;
+  $("message").style.display = "block";
 }
 
-function hideMessage(){
-$("message").style.display = "none";
+function showError(error){
+  console.error(error);
+  message(error.message || "Something went wrong.");
 }
 
-function friendlyError(error){
-const errors = {
-"auth/email-already-in-use":"Email already registered.",
-"auth/invalid-email":"Invalid email address.",
-"auth/weak-password":"Password must be at least 6 characters.",
-"auth/invalid-credential":"Incorrect email or password.",
-"auth/operation-not-allowed":"This provider is not enabled.",
-"auth/unauthorized-domain":"This domain is not authorized in Firebase.",
-"auth/too-many-requests":"Too many attempts. Try again later.",
-"auth/account-exists-with-different-credential":
-"An account already exists with another sign-in method."
-};
-return errors[error.code] || error.message || "Something went wrong.";
+function showSettings(show){
+  $("settings").classList.toggle("hidden",!show);
 }
 
-// LOGIN / REGISTER
-$("switchMode").onclick = () => {
-registering = !registering;
-hideMessage();
+function switchMode(register){
+  registering = register;
 
-$("submitBtn").textContent =
-registering ? "Create Account" : "Sign In";
+  $("loginTab").classList.toggle("active",!register);
+  $("registerTab").classList.toggle("active",register);
 
-$("switchLabel").textContent =
-registering ? "Already registered?" : "New here?";
+  $("submitButton").textContent =
+    register ? "Create Account" : "Login";
 
-$("switchMode").textContent =
-registering ? "Sign in" : "Create an account";
+  $("password").autocomplete =
+    register ? "new-password" : "current-password";
 
-$("password").autocomplete =
-registering ? "new-password" : "current-password";
-};
-
-// EMAIL AUTH
-$("authForm").onsubmit = async event => {
-event.preventDefault();
-hideMessage();
-$("submitBtn").disabled = true;
-
-try {
-const address = $("email").value.trim();
-const pass = $("password").value;
-
-if(registering){
-await createUserWithEmailAndPassword(auth,address,pass);
-}else{
-await signInWithEmailAndPassword(auth,address,pass);
-}
-} catch(error){
-showMessage(friendlyError(error));
-} finally{
-$("submitBtn").disabled = false;
-}
-};
-
-// PASSWORD RESET
-$("forgot").onclick = async () => {
-const address = $("email").value.trim();
-
-if(!address){
-showMessage("Enter your email address first.");
-return;
+  $("message").style.display = "none";
 }
 
-try{
-await sendPasswordResetEmail(auth,address);
-showMessage("Password reset email sent!");
-}catch(error){
-showMessage(friendlyError(error));
-}
-};
+$("loginTab").onclick = () => switchMode(false);
+$("registerTab").onclick = () => switchMode(true);
 
-// PROVIDERS
-const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({prompt:"select_account"});
+$("authForm").addEventListener("submit",async event=>{
+  event.preventDefault();
 
-const twitterProvider = new TwitterAuthProvider();
-const githubProvider = new GithubAuthProvider();
-const yahooProvider = new OAuthProvider("yahoo.com");
+  const email = $("email").value.trim();
+  const password = $("password").value;
 
-// REDIRECT LOGIN
-async function socialSignIn(provider){
-hideMessage();
-try{
-await signInWithRedirect(auth,provider);
-}catch(error){
-showMessage(friendlyError(error));
-}
-}
-
-$("google").onclick = () => socialSignIn(googleProvider);
-$("twitter").onclick = () => socialSignIn(twitterProvider);
-$("github").onclick = () => socialSignIn(githubProvider);
-$("yahoo").onclick = () => socialSignIn(yahooProvider);
-
-// REDIRECT RESULT
-try{
-await getRedirectResult(auth);
-}catch(error){
-showMessage(friendlyError(error));
-}
-
-// AUTH STATE
-onAuthStateChanged(auth,user => {
-if(user){
-$("login").style.display = "none";
-$("account").style.display = "block";
-$("userEmail").textContent =
-user.email || "Signed-in account";
-}else{
-$("login").style.display = "block";
-$("account").style.display = "none";
-}
+  try{
+    if(registering){
+      await createUserWithEmailAndPassword(auth,email,password);
+      message("Account created successfully!");
+    }else{
+      await signInWithEmailAndPassword(auth,email,password);
+      message("Login successful!");
+    }
+  }catch(error){
+    showError(error);
+  }
 });
 
-// SIGN OUT
-$("logout").onclick = async () => {
-try{
-await signOut(auth);
-}catch(error){
-showMessage(friendlyError(error));
-}
+$("resetButton").onclick = async()=>{
+  const email = $("email").value.trim();
+
+  if(!email){
+    message("Enter your email address first.");
+    return;
+  }
+
+  try{
+    await sendPasswordResetEmail(auth,email);
+    message("Password reset email sent.");
+  }catch(error){
+    showError(error);
+  }
 };
 
+async function socialLogin(provider){
+  try{
+    await signInWithPopup(auth,provider);
+    message("Successfully signed in!");
+  }catch(error){
+    showError(error);
+  }
+}
+
+$("googleButton").onclick=()=>{
+  socialLogin(new GoogleAuthProvider());
+};
+
+$("xButton").onclick=()=>{
+  socialLogin(new TwitterAuthProvider());
+};
+
+$("githubButton").onclick=()=>{
+  socialLogin(new GithubAuthProvider());
+};
+
+$("yahooButton").onclick=()=>{
+  socialLogin(new OAuthProvider("yahoo.com"));
+};
+
+$("settingsButton").onclick=()=>{
+  showSettings($("settings").classList.contains("hidden"));
+};
+
+onAuthStateChanged(auth,user=>{
+  if(user){
+    $("authSection").classList.add("hidden");
+    $("accountSection").classList.remove("hidden");
+
+    $("welcome").textContent =
+      "Welcome, "+(user.displayName || "Slayer")+"!";
+
+    $("accountEmail").textContent = user.email || "";
+
+    $("verificationStatus").textContent =
+      user.emailVerified ? "Email verified" : "Email not verified";
+
+    $("displayName").value = user.displayName || "";
+    $("photoURL").value = user.photoURL || "";
+
+    $("avatar").src = user.photoURL ||
+      "https://placehold.co/200x200/303044/ffffff?text=Slayer";
+
+    $("avatarPreview").src = $("avatar").src;
+  }else{
+    $("authSection").classList.remove("hidden");
+    $("accountSection").classList.add("hidden");
+    showSettings(false);
+  }
+});
+
+$("saveNameButton").onclick=async()=>{
+  const user=auth.currentUser;
+  const name=$("displayName").value.trim();
+
+  if(!user)return;
+  if(!name){
+    message("Enter a display name.");
+    return;
+  }
+
+  try{
+    await updateProfile(user,{displayName:name});
+    $("welcome").textContent="Welcome, "+name+"!";
+    message("Display name updated!");
+  }catch(error){
+    showError(error);
+  }
+};
+
+$("photoURL").addEventListener("input",()=>{
+  const value=$("photoURL").value.trim();
+
+  if(!value){
+    $("avatarPreview").src =
+      "https://placehold.co/200x200/303044/ffffff?text=Slayer";
+    return;
+  }
+
+  try{
+    const url=new URL(value);
+    if(url.protocol==="https:"){
+      $("avatarPreview").src=url.href;
+    }
+  }catch{}
+});
+
+$("savePhotoButton").onclick=async()=>{
+  const user=auth.currentUser;
+  const value=$("photoURL").value.trim();
+
+  if(!user)return;
+
+  try{
+    const url=new URL(value);
+
+    if(url.protocol!=="https:"){
+      throw new Error("Use an HTTPS image URL.");
+    }
+
+    $("savePhotoButton").disabled=true;
+
+    const response=await fetch(url.href,{method:"HEAD",mode:"cors"});
+
+    if(!response.ok){
+      throw new Error("Image could not be verified. Check its URL.");
+    }
+
+    const contentType=response.headers.get("content-type")||"";
+
+    if(!contentType.startsWith("image/")){
+      throw new Error("That URL does not appear to be an image.");
+    }
+
+    await updateProfile(user,{photoURL:url.href});
+
+    $("avatar").src=url.href;
+    $("avatarPreview").src=url.href;
+
+    message("Profile picture saved!");
+  }catch(error){
+    showError(error);
+  }finally{
+    $("savePhotoButton").disabled=false;
+  }
+};
+
+$("removePhotoButton").onclick=async()=>{
+  try{
+    await updateProfile(auth.currentUser,{photoURL:null});
+
+    $("avatar").src =
+      "https://placehold.co/200x200/303044/ffffff?text=Slayer";
+
+    $("avatarPreview").src=$("avatar").src;
+    $("photoURL").value="";
+
+    message("Profile picture removed.");
+  }catch(error){
+    showError(error);
+  }
+};
+
+$("passwordButton").onclick=async()=>{
+  const password=$("newPassword").value;
+
+  if(password.length<6){
+    message("Password must be at least 6 characters.");
+    return;
+  }
+
+  try{
+    await updatePassword(auth.currentUser,password);
+    $("newPassword").value="";
+    message("Password changed successfully!");
+  }catch(error){
+    showError(error);
+  }
+};
+
+$("verifyButton").onclick=async()=>{
+  try{
+    await sendEmailVerification(auth.currentUser);
+    message("Verification email sent!");
+  }catch(error){
+    showError(error);
+  }
+};
+
+$("logoutButton").onclick=async()=>{
+  try{
+    await signOut(auth);
+    message("Logged out.");
+  }catch(error){
+    showError(error);
+  }
+};
+
+$("deleteButton").onclick=async()=>{
+  const user=auth.currentUser;
+
+  if(!user)return;
+
+  const confirmed=confirm(
+    "Are you sure you want to permanently delete your account? This cannot be undone."
+  );
+
+  if(!confirmed)return;
+
+  if(!user.providerData.some(p=>p.providerId==="password")){
+    message("For security, provider-based accounts need to reauthenticate before deletion. Please sign in again first.");
+    return;
+  }
+
+  const password=prompt("Enter your current password to confirm deletion.");
+
+  if(password===null)return;
+
+  try{
+    const credential=EmailAuthProvider.credential(user.email,password);
+    await reauthenticateWithCredential(user,credential);
+    await deleteUser(user);
+    message("Account deleted.");
+  }catch(error){
+    showError(error);
+  }
+};
 </script>
 </body>
 </html>
