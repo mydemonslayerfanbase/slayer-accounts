@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101014">
+
+  <title>Slayer Accounts | My Demon Slayer Fanbase</title>
+
+  <meta name="description" content="Sign in or create your My Demon Slayer Fanbase account.">
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+  <main class="shell">
+
+    <!-- BRAND -->
+    <header class="brand">
+      <div class="brand-mark">鬼</div>
+
+      <div>
+        <p class="eyebrow">MY DEMON SLAYER FANBASE</p>
+        <h1>SLAYER <span>ACCOUNTS</span></h1>
+      </div>
+    </header>
+
+    <!-- AUTHENTICATION -->
+    <section class="panel">
+
+      <div class="panel-top">
+        <p class="eyebrow" id="mode-label">
+          WELCOME BACK
+        </p>
+
+        <h2 id="form-title">Sign in</h2>
+
+        <p class="muted" id="form-description">
+          Enter your account details to continue.
+        </p>
+      </div>
+
+      <!-- LOGIN / SIGNUP TABS -->
+      <div class="tabs" role="group" aria-label="Account options">
+
+        <button
+          class="tab active"
+          id="login-tab"
+          type="button">
+          Sign in
+        </button>
+
+        <button
+          class="tab"
+          id="signup-tab"
+          type="button">
+          Create account
+        </button>
+
+      </div>
+
+      <!-- AUTH FORM -->
+      <form id="auth-form">
+
+        <label
+          for="display-name"
+          id="name-label"
+          class="hidden">
+          Display name
+        </label>
+
+        <input
+          id="display-name"
+          type="text"
+          placeholder="Display name"
+          autocomplete="name"
+          class="hidden">
+
+        <label for="email">
+          Email address
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required>
+
+        <label for="password">
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          placeholder="Your password"
+          autocomplete="current-password"
+          minlength="6"
+          required>
+
+        <button
+          class="text-button"
+          id="forgot-button"
+          type="button">
+          Forgot password?
+        </button>
+
+        <button
+          class="primary-button"
+          id="submit-button"
+          type="submit">
+          Sign in
+        </button>
+
+      </form>
+
+      <!-- GOOGLE SIGN-IN -->
+      <div class="separator">
+        <span>OR</span>
+      </div>
+
+      <button
+        class="google-button"
+        id="google-button"
+        type="button">
+
+        <span class="google-g">G</span>
+
+        Continue with Google
+
+      </button>
+
+      <!-- STATUS MESSAGES -->
+      <p
+        id="status"
+        class="status"
+        role="status"
+        aria-live="polite">
+      </p>
+
+      <!-- SIGNED-IN PANEL -->
+      <section
+        id="signed-in"
+        class="signed-in hidden">
+
+        <p class="eyebrow">AUTHENTICATED</p>
+
+        <h3>You're signed in!</h3>
+
+        <p
+          class="muted"
+          id="user-details">
+        </p>
+
+        <button
+          class="primary-button"
+          id="continue-button"
+          type="button">
+          Continue to fanbase
+        </button>
+
+        <button
+          class="text-button signout-button"
+          id="signout-button"
+          type="button">
+          Sign out
+        </button>
+
+      </section>
+
+      <p class="fine-print">
+        Protected by Firebase Authentication.
+      </p>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      © <span id="year"></span>
+      My Demon Slayer Fanbase
+    </footer>
+
+  </main>
+
+  <!-- AUTHENTICATION JAVASCRIPT -->
+  <script type="module" src="./auth.js"></script>
+
+</body>
+</html>
